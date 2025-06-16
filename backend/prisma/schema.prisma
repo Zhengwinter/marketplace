@@ -1,0 +1,48 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  jobs      Job[]
+  createdAt DateTime @default(now())
+}
+
+model Provider {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  isOnline  Boolean  @default(false)
+  jobs      Job[]
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id             String    @id @default(uuid())
+  category       String
+  smartPrice     Float
+  arrivalWindow  String
+  status         JobStatus @default(PENDING)
+  customer       Customer  @relation(fields: [customerId], references: [id])
+  customerId     String
+  provider       Provider? @relation(fields: [providerId], references: [id])
+  providerId     String?
+  createdAt      DateTime  @default(now())
+  acceptedAt     DateTime?
+}
+
+enum JobStatus {
+  PENDING
+  ACCEPTED
+  FILLED
+  EXPIRED
+}
