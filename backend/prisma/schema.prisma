@@ -28,6 +28,7 @@ model Provider {
 
 model Job {
   id             String    @id @default(uuid())
+  title          String
   category       String
   smartPrice     Float
   arrivalWindow  String
