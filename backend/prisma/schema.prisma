@@ -15,6 +15,8 @@ model Customer {
   email     String   @unique
   jobs      Job[]
   createdAt DateTime @default(now())
+  latitude  Float
+  longitude Float
 }
 
 model Provider {
@@ -24,6 +26,10 @@ model Provider {
   isOnline  Boolean  @default(false)
   jobs      Job[]
   createdAt DateTime @default(now())
+  bids      Bid[]
+  rating    Float?
+  latitude  Float
+  longitude Float
 }
 
 model Job {
@@ -31,6 +37,7 @@ model Job {
   title          String
   category       String
   smartPrice     Float
+  acceptPrice    Float? 
   arrivalWindow  String
   status         JobStatus @default(PENDING)
   customer       Customer  @relation(fields: [customerId], references: [id])
@@ -39,7 +46,23 @@ model Job {
   providerId     String?
   createdAt      DateTime  @default(now())
   acceptedAt     DateTime?
+  bids           Bid[]
 }
+
+model Bid {
+  id         String   @id @default(cuid())
+  price      Float
+  note       String?
+  createdAt  DateTime @default(now())
+  eta        Int
+
+  jobId      String
+  providerId String
+
+  job        Job      @relation(fields: [jobId], references: [id])
+  provider   Provider @relation(fields: [providerId], references: [id])
+}
+
 
 enum JobStatus {
   PENDING

@@ -8,13 +8,14 @@ const jobRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   fastify.post('/', async (request, reply) => {
-    const { title, category, smartPrice, arrivalWindow, customerId, providerId, createdAt } = request.body as any;
+    const { title, category, smartPrice, arrivalWindow, acceptPrice, customerId, providerId, createdAt } = request.body as any;
     const job = await prisma.job.create({
       data: {
         title,
         createdAt: new Date(createdAt),
         category,
         smartPrice,
+        acceptPrice,
         arrivalWindow,
         customer: { connect: { id: customerId } },
         provider: providerId ? { connect: { id: providerId } } : undefined,
